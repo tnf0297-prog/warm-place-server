@@ -4,16 +4,13 @@ const cors = require("cors");
 const app = express();
 
 /**
- * 🔴 CORS 完全対応（ここ重要）
+ * 🔴 Cloud Run / Flutter Web 対応
  */
-const corsOptions = {
+app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // ← ★これが不足していました
+}));
 
 app.use(express.json());
 
@@ -23,6 +20,8 @@ app.get("/", (req, res) => {
 
 app.post("/chat", async (req, res) => {
   try {
+    const messages = req.body.messages || [];
+
     res.json({
       reply: "こんにちは。ちゃんと届いています 🌱",
     });
@@ -32,7 +31,10 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+/**
+ * 🔴 ここが最重要ポイント
+ */
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on ${port}`);
 });
