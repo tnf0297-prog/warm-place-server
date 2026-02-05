@@ -4,16 +4,16 @@ const cors = require("cors");
 const app = express();
 
 /**
- * 🌍 CORS（最重要）
+ * 🔴 CORS 完全対応（ここ重要）
  */
-app.use(cors({
+const corsOptions = {
   origin: "*",
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"],
-}));
+};
 
-// 🔴 OPTIONS 明示対応（これが無いとスマホが死ぬ）
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ← ★これが不足していました
 
 app.use(express.json());
 
@@ -21,10 +21,8 @@ app.get("/", (req, res) => {
   res.send("Warm Place Server OK");
 });
 
-app.post("/chat", (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
-    const messages = req.body.messages || [];
-
     res.json({
       reply: "こんにちは。ちゃんと届いています 🌱",
     });
