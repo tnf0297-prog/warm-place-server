@@ -1,40 +1,28 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-/**
- * 🔴 Cloud Run / Flutter Web 対応
- */
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
-}));
+// ★ ここが超重要
+app.use(cors());
 
+// JSONを受け取れるようにする
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Warm Place Server OK");
 });
 
-app.post("/chat", async (req, res) => {
-  try {
-    const messages = req.body.messages || [];
+app.post("/chat", (req, res) => {
+  console.log("📩 受信:", req.body);
 
-    res.json({
-      reply: "こんにちは。ちゃんと届いています 🌱",
-    });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "server error" });
-  }
+  res.json({
+    reply: "こんにちは、サーバーです 🌱",
+    received: req.body
+  });
 });
 
-/**
- * 🔴 ここが最重要ポイント
- */
-const port = process.env.PORT || 8080;
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server listening on ${port}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
 });
