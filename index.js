@@ -53,7 +53,11 @@ app.post("/chat", async (req, res) => {
       data.choices?.[0]?.message?.content ??
       "……うまく言葉が見つかりませんでした 🌱";
 
-    res.json({ reply });
+    res.json({
+  role: "assistant",
+  content: reply,
+});
+
   } catch (err) {
     console.error("❌ OpenAI error:", err);
     res.status(500).json({
